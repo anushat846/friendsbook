@@ -11,13 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.friendsbook.server.core.PostsResource;
 import com.friendsbook.server.models.CreatePostModel;
+import com.friendsbook.server.models.DatabaseConnection;
 import com.friendsbook.server.models.DeletePostModel;
 import com.friendsbook.server.models.UpdatePostModel;
 
 @RestController
 public class FriendsBookServer {
 
-	PostsResource resource = new PostsResource();
+	PostsResource resource = new PostsResource(
+			new DatabaseConnection("localhost", 3306, "friendsbook", "root", "admin"));
+	
 
     @PutMapping("/posts/create")
 	public ResponseEntity createPost(@RequestBody CreatePostModel post) {

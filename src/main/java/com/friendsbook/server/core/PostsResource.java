@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.friendsbook.server.models.CreatePostModel;
+import com.friendsbook.server.models.DatabaseConnection;
 import com.friendsbook.server.models.DeletePostModel;
 import com.friendsbook.server.models.PostsModel;
 import com.friendsbook.server.models.UpdatePostModel;
@@ -16,9 +17,13 @@ public class PostsResource {
 
     Connection db;
 
-    public PostsResource() {
+    public PostsResource(DatabaseConnection db) {
         try {
-            this.db = DriverManager.getConnection("jdbc:mysql://localhost:3306/friendbook?serverTimezone=UTC", "root", "admin");
+            this.db = DriverManager.getConnection(
+            		String.format("jdbc:mysql://%s:%d/%s?serverTimezone=UTC", db.getHost(), db.getPort(), db.getDatabase()), 
+            		db.getUsername(), 
+            		db.getPassword()
+            );
         }catch (Exception e) {
             e.printStackTrace();
         }
