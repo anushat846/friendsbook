@@ -1,13 +1,12 @@
 package com.friendsbook.server;
 
-import javax.rmi.CORBA.Stub;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.friendsbook.server.core.PostsResource;
@@ -30,7 +29,10 @@ public class FriendsBookServer {
 	}
 
     @GetMapping("/posts/list")
-	public ResponseEntity listPosts() {
+	public ResponseEntity listPosts(@RequestParam(name="userId", defaultValue="-1") int userId) {
+    	if(userId !=-1) {
+    		return ResponseEntity.ok().body(resource.listPosts(userId));
+    	}
 		return ResponseEntity.ok().body(resource.listPosts());		
 	}
 
@@ -51,4 +53,18 @@ public class FriendsBookServer {
 		}
 		return ResponseEntity.badRequest().body("Failed to delete post.");
 	}
+    
+    // GOAL: create a POST request API to increment likes for a post
+    // Request Type: POST
+    // Request Parameters: post id
+    // Response: Return success in case of successful transaction. Otherwise, a failure message.
+    @PostMapping("/posts/update/likes")
+    public ResponseEntity likeThePost(@RequestBody UpdatePostModel post) {
+    	Boolean status=resource.updatePostLikes(post);
+		if(status) {
+    		return ResponseEntity.ok().body("Post liked successfully");
+    	}
+		return ResponseEntity.badRequest().body("Failed to update likes for post");
+    }
+    
 }
